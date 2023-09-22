@@ -1,8 +1,20 @@
 ﻿@using Tymr.Client.Shared;
-<h3>@DateTime.Now.StartOfWeek(DayOfWeek.Sunday)</h3>
-Enter your work hours for the day.
+
+<EditForm Model="@TimeEntry">
+
+    <h3>Beginning @DateTime.Now.StartOfWeek(DayOfWeek.Sunday).ToString("dddd, M/d/yyyy") - </h3>
+
+    <label>Enter your work hours for the day.</label>
+
+    <div class="form-group">
+        <label for="hours">Hours</label>
+        <input type="number" class="form-control" id="hours" placeholder="Enter hours">
+    </div>
+
+</EditForm>
 
 @code {
-    
+
+    TimeEntryToWrite TimeEntry = new TimeEntryToWrite();
 
 }
