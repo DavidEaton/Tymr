@@ -1,10 +1,14 @@
 ﻿@page "/"
+@using Tymr.Client.Features
 
 <PageTitle>Tymr</PageTitle>
 
 <h1>@DateTime.Today.ToString("d")</h1>
 
-Enter your work hours for the day.
+
+<TimeEntryEditForm></TimeEntryEditForm>
+
+
 
 Notes
 
