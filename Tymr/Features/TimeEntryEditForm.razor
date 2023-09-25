@@ -1,20 +1,29 @@
 ﻿@using Tymr.Client.Shared;
+<div class="pt-3">
+    <EditForm Model="@TimeEntry">
+        <h3 class="text-info">Beginning @DateTime.Now.StartOfWeek(DayOfWeek.Sunday).ToString("dddd, M/d/yyyy")</h3>
 
-<EditForm Model="@TimeEntry">
-
-    <h3>Beginning @DateTime.Now.StartOfWeek(DayOfWeek.Sunday).ToString("dddd, M/d/yyyy") - </h3>
-
-    <label>Enter your work hours for the day.</label>
-
-    <div class="form-group">
-        <label for="hours">Hours</label>
-        <input type="number" class="form-control" id="hours" placeholder="Enter hours">
-    </div>
-
-</EditForm>
-
-@code {
-
-    TimeEntryToWrite TimeEntry = new TimeEntryToWrite();
-
-}
+        <div class="d-flex flex-column align-items-start mb-3 pt-3">
+            <label class="text-info mb-2">Enter your work begin and end time.</label>
+            <div class="d-flex flex-column flex-md-row w-100 pt-3">
+                <div class="d-flex flex-column mb-2 mb-md-0 me-md-3">
+                    <label class="text-info" for="startTime">Begin</label>
+                    <input type="time" @bind-value="Begin" @bind-value:event="oninput" @onchange="UpdateDuration" id="begin" name="begin" class="form-control" step="900" />
+                </div>
+                <div class="d-flex flex-column me-md-3">
+                    <label class="text-info" for="endTime">End</label>
+                    <input type="time" @bind-value="End" @bind-value:event="oninput" @onchange="UpdateDuration" id="end" name="end" class="form-control" step="900" />
+                </div>
+                <div class="d-flex flex-md-row">
+                    <div class="d-flex flex-column me-md-3">
+                        <label class="text-info" for="duration">Hours</label>
+                        <input type="text" @bind-value="Duration" id="duration" name="duration" class="form-control w-50" readonly />
+                    </div>
+                    <div class="d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+</div>

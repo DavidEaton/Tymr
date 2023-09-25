@@ -2,22 +2,29 @@
 
 namespace Tymr.Data.Entities
 {
-    public class TimeEntry : Entity
+    public class TimeEntry
     {
-        private static readonly int minimumDuration = 0;
+        private static readonly TimeSpan minimumDuration = TimeSpan.FromMinutes(0);
         public DateTime Date { get; private set; }
-        public int Duration { get; private set; }
-        private TimeEntry(DateTime date, int duration)
+        private TimeOnly Begin { get; set; }
+        private TimeOnly End { get; set; }
+        public TimeSpan Duration => End - Begin;
+
+        private TimeEntry(DateTime date, TimeOnly begin, TimeOnly end)
         {
             Date = date;
-            Duration = duration;
+            Begin = begin;
+            End = end;
         }
 
-        public static Result<TimeEntry> Create(int duration)
+        public static Result<TimeEntry> Create(TimeOnly begin, TimeOnly end)
         {
-            return duration >= minimumDuration
-                ? Result.Success(new TimeEntry(DateTime.Now, duration))
-                : Result.Failure<TimeEntry>($"Duration must be greater than {minimumDuration}");
+            if (begin > end)
+                return Result.Failure<TimeEntry>("Begin time must be earlier than end time");
+
+            return (end - begin) >= minimumDuration
+            ? Result.Success(new TimeEntry(DateTime.Now, begin, end))
+            : Result.Failure<TimeEntry>($"Duration must be greater than {minimumDuration}");
         }
 
         public Result<DateTime> SetDate(DateTime date)
@@ -26,11 +33,6 @@ namespace Tymr.Data.Entities
                 date > DateTime.Now
                 ? Result.Failure<DateTime>("Date cannot be in the future")
                 : Result.Success(Date = date);
-
-        }
-
-        protected TimeEntry()
-        {
         }
     }
 }
