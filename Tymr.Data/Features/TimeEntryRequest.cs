@@ -1,4 +1,4 @@
-﻿namespace Tymr.Client.Features
+﻿namespace Tymr.Data.Features
 {
     public class TimeEntryRequest
     {

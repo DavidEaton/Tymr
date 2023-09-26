@@ -2,13 +2,13 @@
 using System.Text.Json;
 using Tymr.Data.Entities;
 
-namespace Tymr.Api.Features
+namespace Tymr.Data.Features
 {
     public class TimeEntryRepository : ITimeEntryRepository
     {
         private const string FilePath = @"C:\Users\david\OneDrive\Janco\Tymr\Entries\time_entries.json";
 
-        public async Task<Result> AddAsync(TimeEntry entry)
+        public async Task<Result> AddAsync(TimeEntryRequest entryRequest)
         {
             var entriesResult = await GetAllAsync();
 
@@ -17,10 +17,19 @@ namespace Tymr.Api.Features
 
             var entries = entriesResult.Value;
 
-            if (entries.Any(e => e.Date == entry.Date && e.Begin == entry.Begin && e.End == entry.End))
+            if (entries.Any(
+                timeEntry =>
+                timeEntry.Date == entryRequest.Date
+                    && timeEntry.Begin == entryRequest.Begin
+                    && timeEntry.End == entryRequest.End))
                 return Result.Failure("Entry with the same Date, Begin, and End time already exists.");
 
-            entries = entries.Append(entry).ToArray();
+            var entryResult = TimeEntry.Create(entryRequest.Begin, entryRequest.End);
+
+            if (entryResult.IsFailure)
+                return Result.Failure(entryResult.Error);
+
+            entries = entries.Append(entryResult.Value).ToArray();
 
             return await WriteAllAsync(entries);
         }
@@ -35,15 +44,13 @@ namespace Tymr.Api.Features
             var entries = entriesResult.Value;
 
             entries = entries
-                        .Where(e => !(e.Date == entryToDelete.Date && e.Begin == entryToDelete.Begin && e.End == entryToDelete.End))
-                        .ToArray();
+                .Where(timeEntry =>
+                !(timeEntry.Date == entryToDelete.Date
+                && timeEntry.Begin == entryToDelete.Begin
+                && timeEntry.End == entryToDelete.End))
+                .ToArray();
 
             return await WriteAllAsync(entries);
-        }
-
-        public Task<Result> DeleteAsync(int id)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<Result<IEnumerable<TimeEntry>>> GetAllAsync()
@@ -91,6 +98,11 @@ namespace Tymr.Api.Features
                         .ToArray();
 
             return await WriteAllAsync(entries);
+        }
+
+        public Task<Result> UpdateAsync(TimeEntryRequest entry)
+        {
+            throw new NotImplementedException();
         }
 
         private async Task<Result> WriteAllAsync(IEnumerable<TimeEntry> entries)

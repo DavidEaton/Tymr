@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Tymr.Data.Features;
 
 namespace Tymr.Client.Features
 {
@@ -34,7 +35,7 @@ namespace Tymr.Client.Features
             TimeEntry.End = End;
             TimeEntry.Duration = int.Parse(Duration);
 
-
+            TimeEntryRepository.AddAsync(TimeEntry);
         }
     }
 }

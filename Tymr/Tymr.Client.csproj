@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Tymr.Api\Tymr.Api.csproj" />
+    <ProjectReference Include="..\Tymr.Data\Tymr.Data.csproj" />
   </ItemGroup>
 
 </Project>
