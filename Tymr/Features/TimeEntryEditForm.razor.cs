@@ -1,4 +1,6 @@
-﻿namespace Tymr.Client.Features
+﻿using Microsoft.AspNetCore.Components;
+
+namespace Tymr.Client.Features
 {
     public partial class TimeEntryEditForm
     {
@@ -6,6 +8,9 @@
         private TimeOnly Begin { get; set; }
         private TimeOnly End { get; set; }
         private string Duration { get; set; }
+
+        [Inject]
+        private ITimeEntryRepository TimeEntryRepository { get; set; }
 
         public void UpdateDuration()
         {

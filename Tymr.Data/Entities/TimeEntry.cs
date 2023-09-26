@@ -6,8 +6,8 @@ namespace Tymr.Data.Entities
     {
         private static readonly TimeSpan minimumDuration = TimeSpan.FromMinutes(0);
         public DateTime Date { get; private set; }
-        private TimeOnly Begin { get; set; }
-        private TimeOnly End { get; set; }
+        public TimeOnly Begin { get; private set; }
+        public TimeOnly End { get; private set; }
         public TimeSpan Duration => End - Begin;
 
         private TimeEntry(DateTime date, TimeOnly begin, TimeOnly end)
