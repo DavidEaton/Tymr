@@ -1,8 +1,10 @@
-﻿namespace Tymr.Data.Features
+﻿using Tymr.Data.Entities;
+
+namespace Tymr.Data.Features
 {
     public static class TimeEntryRequestExtensions
     {
-        public static bool IsNotUnique(this TimeEntryRequest entry, IEnumerable<TimeEntryRequest> existingEntries)
+        public static bool IsNotUnique(this TimeEntryRequest entry, IEnumerable<TimeEntry> existingEntries)
         {
             return existingEntries.Any(existingEntry =>
                 existingEntry.Date == entry.Date &&
