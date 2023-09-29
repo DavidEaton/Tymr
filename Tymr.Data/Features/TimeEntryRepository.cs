@@ -30,10 +30,13 @@ namespace Tymr.Data.Features
 
         private static Result CheckUniqueness(IEnumerable<TimeEntry> entries, TimeEntryRequest request)
         {
-            if (entries.Any(e => e.Date == request.Date && e.Begin == request.Begin && e.End == request.End))
+            if (entries.Any(e => EntryIsEquivalent(e, request)))
                 return Result.Failure("Entry with the same Date, Begin, and End time already exists.");
+
             return Result.Success();
         }
+
+        private static readonly Func<TimeEntry, TimeEntryRequest, bool> EntryIsEquivalent = (e, request) => e.Date == request.Date && e.Begin == request.Begin && e.End == request.End;
 
         private static Result<TimeEntry> CreateTimeEntry(TimeEntryRequest request)
         {
@@ -45,7 +48,6 @@ namespace Tymr.Data.Features
             var updatedEntries = existingEntries.Append(newEntry).ToArray();
             return await WriteAllAsync(updatedEntries);
         }
-
 
         public async Task<Result> DeleteAsync(TimeEntry entryToDelete)
         {
