@@ -27,13 +27,11 @@ namespace Tymr.Client.Features
             Duration = $"{durationInHours:F2}"; // Formatted to 2 decimal places
         }
 
-        // Add a save method to invoke when the Submit button is clicked
         private void Save()
         {
-            // put values into TimeEntryRequest dto
             TimeEntry.Begin = Begin;
             TimeEntry.End = End;
-            TimeEntry.Duration = int.Parse(Duration);
+            TimeEntry.Duration = double.Parse(Duration);
 
             TimeEntryRepository.AddAsync(TimeEntry);
         }

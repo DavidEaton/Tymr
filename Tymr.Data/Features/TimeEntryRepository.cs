@@ -6,15 +6,14 @@ namespace Tymr.Data.Features
 {
     public class TimeEntryRepository : ITimeEntryRepository
     {
-        private const string FilePath = @"C:\Users\david\OneDrive\Janco\Tymr\Entries\time_entries.json";
+        private const string FilePath = "Data/time_entries.json";
 
         public async Task<Result> AddAsync(TimeEntryRequest entryRequest)
         {
-            var entriesResult = await GetAllEntitiesAsync();
+            var entriesResult = await GetAllAsync();
 
             if (entriesResult.IsFailure)
                 return Result.Failure("Failed to retrieve existing entries.");
-
             var entries = entriesResult.Value;
 
             if (entryRequest.IsNotUnique(entries))
@@ -40,7 +39,7 @@ namespace Tymr.Data.Features
 
         public async Task<Result> DeleteAsync(TimeEntry entryToDelete)
         {
-            var entriesResult = await GetAllEntitiesAsync();
+            var entriesResult = await GetAllAsync();
 
             if (entriesResult.IsFailure)
                 return Result.Failure("Failed to retrieve existing entries.");
@@ -57,7 +56,7 @@ namespace Tymr.Data.Features
             return await WriteAllAsync(entries);
         }
 
-        public async Task<Result<IEnumerable<TimeEntry>>> GetAllEntitiesAsync()
+        public async Task<Result<IEnumerable<TimeEntry>>> GetAllAsync()
         {
             if (!File.Exists(FilePath))
                 return Result.Success(new List<TimeEntry>() as IEnumerable<TimeEntry>);
@@ -76,7 +75,7 @@ namespace Tymr.Data.Features
 
         public async Task<Result<IEnumerable<TimeEntry>>> GetByDateAsync(DateTime date)
         {
-            var allEntriesResult = await GetAllEntitiesAsync();
+            var allEntriesResult = await GetAllAsync();
 
             if (allEntriesResult.IsFailure)
                 return Result.Failure<IEnumerable<TimeEntry>>(allEntriesResult.Error);
@@ -86,7 +85,7 @@ namespace Tymr.Data.Features
 
         public async Task<Result> UpdateAsync(TimeEntryRequest entryRequest)
         {
-            var entriesResult = await GetAllEntitiesAsync();
+            var entriesResult = await GetAllAsync();
 
             if (entriesResult.IsFailure)
                 return Result.Failure("Failed to retrieve existing entries.");
@@ -111,8 +110,10 @@ namespace Tymr.Data.Features
                 await File.WriteAllTextAsync(FilePath, json);
                 return Result.Success();
             }
-            catch
+            catch (Exception ex)
             {
+                await Console.Out.WriteLineAsync(ex.Message);
+                await Console.Out.WriteLineAsync($"{ex}");
                 return Result.Failure("Failed to write to the file.");
             }
         }
