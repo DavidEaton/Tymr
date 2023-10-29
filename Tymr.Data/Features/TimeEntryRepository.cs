@@ -1,5 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using System.Text.Json;
+using Newtonsoft.Json;
 using Tymr.Data.Entities;
 
 namespace Tymr.Data.Features
@@ -64,7 +64,7 @@ namespace Tymr.Data.Features
             try
             {
                 var json = await File.ReadAllTextAsync(FilePath);
-                var entries = JsonSerializer.Deserialize<IEnumerable<TimeEntry>>(json);
+                var entries = JsonConvert.DeserializeObject<IEnumerable<TimeEntry>>(json);
                 return Result.Success(entries);
             }
             catch
@@ -102,11 +102,11 @@ namespace Tymr.Data.Features
                 : Result.Failure("Entry not found to update.");
         }
 
-        private async Task<Result> WriteAllAsync(IEnumerable<TimeEntry> entries)
+        private static async Task<Result> WriteAllAsync(IEnumerable<TimeEntry> entries)
         {
             try
             {
-                var json = JsonSerializer.Serialize(entries);
+                var json = JsonConvert.SerializeObject(entries);
                 await File.WriteAllTextAsync(FilePath, json);
                 return Result.Success();
             }
