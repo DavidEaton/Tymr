@@ -14,48 +14,11 @@ variables:
   artifactPath: 'deploy-packages'
 
 jobs:
-- job: BuildAndPublish
-  displayName: 'Build and Publish Artifacts'
+- job: Build
+  displayName: 'Build Application'
   steps:
-
-
-  # - script: |
-  #     pwd
-  #     ls -la
-  #   displayName: 'List current directory'
-
-   # Build Client project
   - task: DotNetCoreCLI@2
-    displayName: 'Build Client project - $(webAppName)'
     inputs:
       command: 'build'
+      projects: 'Tymr.Client.csproj'
       arguments: '--no-restore --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Client'
-      projects: 'Tymr.Client/Tymr.Client.csproj'
-
-    # Zip Client Build Artifacts
-  - task: PowerShell@2
-    displayName: 'Create Zip Package for Client'
-    inputs:
-      targetType: 'inline'
-      script: |
-        $outputDirClient = "$(Build.ArtifactStagingDirectory)/Client"
-        $zipPathClient = "$(Build.ArtifactStagingDirectory)/Tymr.Client.zip"
-        Compress-Archive -Path $outputDirClient/* -DestinationPath $zipPathClient
-
-    # Publish Client Build Artifacts
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Client Build Artifacts'
-    inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)/Tymr.Client.zip'
-      ArtifactName: 'deploy-packages'
-      publishLocation: 'Container'
-
-    # Deploy Client
-  - task: AzureWebApp@1
-    displayName: 'Publish Client Build Artifacts'
-    inputs:
-      azureSubscription: '$(azureSubscription)'
-      appType: 'webApp'
-      appName: '$(webAppName)'
-      package: '$(Pipeline.Workspace)/$(artifactPath)/Tymr.Client.zip'
-      deploymentMethod: 'runFromPackage'
