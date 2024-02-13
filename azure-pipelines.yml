@@ -6,6 +6,9 @@ pool:
 
 variables:
   
+  - name: azureSubscription
+    value: 'Janco International - Dev(67893773-5aef-487e-83db-5b6b89272593)'
+
   - name: buildConfiguration
     value: 'Release'
 
@@ -28,7 +31,7 @@ steps:
 
 - task: AzureWebApp@1
   inputs:
-    azureSubscription: 'Janco International - Dev(67893773-5aef-487e-83db-5b6b89272593)'
+    azureSubscription: '$(azureSubscription)'
     appType: 'webApp'
     appName: '$(webAppName)'
     package: '$(System.DefaultWorkingDirectory)/**/*.zip'
