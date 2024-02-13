@@ -46,24 +46,25 @@ jobs:
 
 # Deploy Client
 - job: DeployClient
-  displayName: 'Deploy Client'
-  dependsOn: BuildAndPublish
-  condition: succeeded()
-  environment: 'Production'
-  strategy:
-    runOnce:
-      deploy:
-        steps:
-        - download: current
-          artifact: '$(artifactPath)'
+  - deployment: DeployAPI
+    displayName: 'Deploy Client'
+    dependsOn: BuildAndPublish
+    condition: succeeded()
+    environment: 'Production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: '$(artifactPath)'
 
-        - task: AzureRmWebAppDeployment@4
-          inputs:
-            ConnectionType: 'AzureRM'
-            azureSubscription: '$(azureSubscription)'
-            RemoveAdditionalFilesFlag: true
-            appType: 'webApp'
-            WebAppName: '$(webAppName)'
-            deployToSlotOrASE: false
-            ResourceGroupName: '$(resourceGroup)' 
-            packageForLinux: '$(Pipeline.Workspace)/$(artifactPath)/Tymr.Client.zip'
+          - task: AzureRmWebAppDeployment@4
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: '$(azureSubscription)'
+              RemoveAdditionalFilesFlag: true
+              appType: 'webApp'
+              WebAppName: '$(webAppName)'
+              deployToSlotOrASE: false
+              ResourceGroupName: '$(resourceGroup)' 
+              packageForLinux: '$(Pipeline.Workspace)/$(artifactPath)/Tymr.Client.zip'
