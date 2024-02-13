@@ -49,7 +49,6 @@ jobs:
   displayName: 'Deploy Client'
   dependsOn: BuildAndPublish
   condition: succeeded()
-  environment: 'Production'
   strategy:
     runOnce:
       deploy:
