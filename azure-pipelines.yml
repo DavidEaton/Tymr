@@ -14,39 +14,47 @@ variables:
   artifactPath: 'Tymr/published'
 
 jobs:
-  - job: BuildAndDeploy
-    displayName: 'Build and Deploy Application'
-    steps:
-      - checkout: self
-      
-      - task: UseDotNet@2
-        displayName: 'Setup .NET SDK'
-        inputs:
-          version: $(dotnetSdkVersion)
-          packageType: sdk
+- job: BuildAndDeploy
+  displayName: 'Build and Deploy Application'
+  steps:
+    - checkout: self
+    
+    - task: UseDotNet@2
+      displayName: 'Setup .NET SDK'
+      inputs:
+        version: $(dotnetSdkVersion)
+        packageType: sdk
 
-      # Restore NuGet packages
-      - task: DotNetCoreCLI@2
-        displayName: 'Restore NuGet packages'
-        inputs:
-          command: 'restore'
-          projects: '**/*.csproj'
+    # Restore NuGet packages for all projects
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore NuGet packages'
+      inputs:
+        command: 'restore'
+        projects: 'Tymr/**/*.csproj'
 
-      # Build Client project
-      - task: DotNetCoreCLI@2
-        displayName: 'Build'
-        inputs:
-          command: 'build'
-          projects: '**/*.csproj'
-          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    # Build Data project (required by Client project)
+    - task: DotNetCoreCLI@2
+      displayName: 'Build Data Project'
+      inputs:
+        command: 'build'
+        projects: 'Tymr/Tymr.Data/Tymr.Data.csproj'
+        arguments: '--configuration $(buildConfiguration)'
 
-      # Run tests
-      - task: DotNetCoreCLI@2
-        displayName: 'Test'
-        inputs:
-          command: 'test'
-          projects: '**/*.csproj'
-          arguments: '--configuration $(buildConfiguration) --no-build'
+    # Build Client project
+    - task: DotNetCoreCLI@2
+      displayName: 'Build Client Project'
+      inputs:
+        command: 'build'
+        projects: 'Tymr/Tymr.Client/Tymr.Client.csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Tymr.Client'
+
+    # Run tests
+    - task: DotNetCoreCLI@2
+      displayName: 'Test'
+      inputs:
+        command: 'test'
+        projects: '**/*.csproj'
+       arguments: '--configuration $(buildConfiguration) --no-build'
 
       # # Publish Client Build Artifacts
       # - task: DotNetCoreCLI@2
