@@ -31,7 +31,7 @@ steps:
 
 - task: AzureWebApp@1
   inputs:
-    azureSubscription: '$(azureSubscription)'
+    azureSubscription: 'Janco International - Dev'
     appType: 'webApp'
     appName: '$(webAppName)'
     package: '$(System.DefaultWorkingDirectory)/**/*.zip'
