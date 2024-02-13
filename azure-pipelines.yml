@@ -18,6 +18,12 @@ jobs:
   displayName: 'Build and Publish Artifacts'
   steps:
 
+
+- script: |
+    pwd
+    ls -la
+  displayName: 'List current directory'
+
    # Build Client project
   - task: DotNetCoreCLI@2
     displayName: 'Build Client project - $(webAppName)'
@@ -44,8 +50,7 @@ jobs:
       ArtifactName: 'deploy-packages'
       publishLocation: 'Container'
 
-# Deploy Client
-
+    # Deploy Client
   - task: AzureWebApp@1
     displayName: 'Publish Client Build Artifacts'
     inputs:
