@@ -45,7 +45,7 @@ jobs:
       publishLocation: 'Container'
 
 # Deploy Client
-- job: DeployClient
+- deployment: DeployClient
   displayName: 'Deploy Client'
   dependsOn: BuildAndPublish
   condition: succeeded()
