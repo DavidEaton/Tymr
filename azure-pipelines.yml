@@ -37,7 +37,7 @@ jobs:
       displayName: 'Build Data Project'
       inputs:
         command: 'build'
-        projects: '**/Tymr.Data.csproj'
+        projects: 'Tymr/Tymr.Data/Tymr.Data.csproj'
         arguments: '--configuration $(buildConfiguration)'
 
     # Build Client project
@@ -45,7 +45,7 @@ jobs:
       displayName: 'Build Client Project'
       inputs:
         command: 'build'
-        projects: '**/Tymr.Client.csproj'
+        projects: 'Tymr/Tymr.Client/Tymr.Client.csproj'
         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Tymr.Client'
 
     # Run tests
@@ -53,8 +53,35 @@ jobs:
       displayName: 'Test'
       inputs:
         command: 'test'
-        projects: '**/*.csproj'
+        projects: '**/*Tests.csproj'
         arguments: '--configuration $(buildConfiguration) --no-build'
+        publishTestResults: true
+
+    # Publish Client build artifacts
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Client Artifacts'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/Tymr.Client'
+        ArtifactName: 'Tymr.Client'
+        publishLocation: 'Container'
+
+    # Deploy Client to Azure Web App
+    - task: AzureWebApp@1
+      displayName: 'Deploy Client to Azure Web App'
+      inputs:
+        azureSubscription: $(azureSubscription)
+        appName: $(webAppName)
+        package: '$(Build.ArtifactStagingDirectory)/Tymr.Client'
+        deploymentMethod: 'runFromPackage'
+
+
+    # # Run tests
+    # - task: DotNetCoreCLI@2
+    #   displayName: 'Test'
+    #   inputs:
+    #     command: 'test'
+    #     projects: '**/*.csproj'
+    #     arguments: '--configuration $(buildConfiguration) --no-build'
 
       # # Publish Client Build Artifacts
       # - task: DotNetCoreCLI@2
