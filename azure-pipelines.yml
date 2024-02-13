@@ -5,31 +5,20 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  
-  - name: azureSubscription
-    value: 'Janco International - Dev'
+  azureSubscription: 'Janco International - Dev'
+  buildConfiguration: 'Release'
+  dotnetSdkVersion: '6.0.x'
+  entityFrameworkVersion: '6.0.*'
+  resourceGroup: 'tymr'
+  webAppName: 'tymr-client'
+  artifactPath: 'deploy-packages'
 
-  - name: buildConfiguration
-    value: 'Release'
+jobs:
+- job: BuildAndPublish
+  displayName: 'Build and Publish Artifacts'
+  steps:
 
-  - name: dotnetSdkVersion
-    value: '6.0.x'
-
-  - name: entityFrameworkVersion
-    value: '6.0.*'
-
-  - name: resourceGroup
-    value: 'tymr'
-
-  - name: webAppName
-    value: 'tymr-client'
-
-  - name: artifactPath
-    value: 'deploy-packages'
-
-steps:
-
-  # Build Client project
+   # Build Client project
   - task: DotNetCoreCLI@2
     displayName: 'Build Client project - $(webAppName)'
     inputs:
@@ -37,9 +26,7 @@ steps:
       arguments: '--no-restore --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Client'
       projects: 'Tymr.Client/Tymr.Client.csproj'
 
-
-# Publish Client Build Artifacts
-  # Zip
+    # Zip Client Build Artifacts
   - task: PowerShell@2
     displayName: 'Create Zip Package for Client'
     inputs:
@@ -49,7 +36,7 @@ steps:
         $zipPathClient = "$(Build.ArtifactStagingDirectory)/Tymr.Client.zip"
         Compress-Archive -Path $outputDirClient/* -DestinationPath $zipPathClient
 
-# Publish
+    # Publish Client Build Artifacts
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Client Build Artifacts'
     inputs:
@@ -58,35 +45,25 @@ steps:
       publishLocation: 'Container'
 
 # Deploy Client
-jobs:
-  - deployment: DeployClient
-    displayName: Deploy Client
-    environment: Production
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - download: current
-            artifact: '$(artifactPath)'
+- job: DeployClient
+  displayName: 'Deploy Client'
+  dependsOn: BuildAndPublish
+  condition: succeeded()
+  environment: 'Production'
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - download: current
+          artifact: '$(artifactPath)'
 
-          - task: AzureRmWebAppDeployment@4
-            inputs:
-              ConnectionType: 'AzureRM'
-              azureSubscription: '$(azureSubscription)'
-              RemoveAdditionalFilesFlag: true
-              appType: 'webApp'
-              WebAppName: '$(webAppName)'
-              deployToSlotOrASE: false
-              # SlotName: '${{ parameters.slot }}'
-              ResourceGroupName: '$(resourceGroup)' 
-              packageForLinux: '$(Pipeline.Workspace)/$(artifactPath)/Tymr.Client.zip'
-
-
-# - task: AzureWebApp@1
-#   inputs:
-#     azureSubscription: '$(azureSubscription)'
-#     appType: 'webApp'
-#     appName: '$(webAppName)'
-#     package: '$(System.DefaultWorkingDirectory)/**/*.zip'
-#     deploymentMethod: 'auto'
-
+        - task: AzureRmWebAppDeployment@4
+          inputs:
+            ConnectionType: 'AzureRM'
+            azureSubscription: '$(azureSubscription)'
+            RemoveAdditionalFilesFlag: true
+            appType: 'webApp'
+            WebAppName: '$(webAppName)'
+            deployToSlotOrASE: false
+            ResourceGroupName: '$(resourceGroup)' 
+            packageForLinux: '$(Pipeline.Workspace)/$(artifactPath)/Tymr.Client.zip'
