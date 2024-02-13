@@ -37,7 +37,7 @@ jobs:
       displayName: 'Build Data Project'
       inputs:
         command: 'build'
-        projects: 'Tymr/Tymr.Data/Tymr.Data.csproj'
+        projects: '**/Tymr.Data.csproj'
         arguments: '--configuration $(buildConfiguration)'
 
     # Build Client project
@@ -45,7 +45,7 @@ jobs:
       displayName: 'Build Client Project'
       inputs:
         command: 'build'
-        projects: 'Tymr/Tymr.Client/Tymr.Client.csproj'
+        projects: '**/Tymr.Client.csproj'
         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Tymr.Client'
 
     # Run tests
