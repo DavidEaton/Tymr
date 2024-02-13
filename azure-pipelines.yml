@@ -20,5 +20,5 @@ jobs:
   - task: DotNetCoreCLI@2
     inputs:
       command: 'build'
-      projects: 'Tymr.Client.csproj'
+      projects: '**/Tymr.Client.csproj'
       arguments: '--no-restore --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Client'
