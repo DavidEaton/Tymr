@@ -54,7 +54,7 @@ jobs:
       inputs:
         command: 'test'
         projects: '**/*.csproj'
-       arguments: '--configuration $(buildConfiguration) --no-build'
+        arguments: '--configuration $(buildConfiguration) --no-build'
 
       # # Publish Client Build Artifacts
       # - task: DotNetCoreCLI@2
