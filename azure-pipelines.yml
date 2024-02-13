@@ -51,10 +51,10 @@ jobs:
 
     # Deploy Client
     - task: AzureWebApp@1
-      displayName: 'Publish Client Build Artifacts'
+      displayName: 'Deploy Client Build Artifacts'
       inputs:
         azureSubscription: '$(azureSubscription)'
         appType: 'webApp'
         appName: '$(webAppName)'
-        package: '$(Pipeline.Workspace)/$(artifactPath)/Tymr.Client.zip'
+        package: '$(Build.ArtifactStagingDirectory)/Tymr.Client.zip'
         deploymentMethod: 'runFromPackage'
