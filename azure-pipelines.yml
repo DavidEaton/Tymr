@@ -7,7 +7,7 @@ pool:
 variables:
   
   - name: azureSubscription
-    value: 'Janco International - Dev(67893773-5aef-487e-83db-5b6b89272593)'
+    value: 'Janco International - Dev'
 
   - name: buildConfiguration
     value: 'Release'
@@ -29,11 +29,64 @@ variables:
 
 steps:
 
-- task: AzureWebApp@1
-  inputs:
-    azureSubscription: 'Janco International - Dev'
-    appType: 'webApp'
-    appName: '$(webAppName)'
-    package: '$(System.DefaultWorkingDirectory)/**/*.zip'
-    deploymentMethod: 'auto'
+  # Build Client project
+  - task: DotNetCoreCLI@2
+    displayName: 'Build Client project - $(webAppName)'
+    inputs:
+      command: 'build'
+      arguments: '--no-restore --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Client'
+      projects: 'Tymr.Client/Tymr.Client.csproj'
+
+
+# Publish Client Build Artifacts
+  # Zip
+  - task: PowerShell@2
+    displayName: 'Create Zip Package for Client'
+    inputs:
+      targetType: 'inline'
+      script: |
+        $outputDirClient = "$(Build.ArtifactStagingDirectory)/Client"
+        $zipPathClient = "$(Build.ArtifactStagingDirectory)/Tymr.Client.zip"
+        Compress-Archive -Path $outputDirClient/* -DestinationPath $zipPathClient
+
+# Publish
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Client Build Artifacts'
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/Tymr.Client.zip'
+      ArtifactName: 'deploy-packages'
+      publishLocation: 'Container'
+
+# Deploy Client
+jobs:
+  - deployment: DeployClient
+    displayName: Deploy Client
+    environment: Production
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: '$(artifactPath)'
+
+          - task: AzureRmWebAppDeployment@4
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: '$(azureSubscription)'
+              RemoveAdditionalFilesFlag: true
+              appType: 'webApp'
+              WebAppName: '$(webAppName)'
+              deployToSlotOrASE: false
+              # SlotName: '${{ parameters.slot }}'
+              ResourceGroupName: '$(resourceGroup)' 
+              packageForLinux: '$(Pipeline.Workspace)/$(artifactPath)/Tymr.Client.zip'
+
+
+# - task: AzureWebApp@1
+#   inputs:
+#     azureSubscription: '$(azureSubscription)'
+#     appType: 'webApp'
+#     appName: '$(webAppName)'
+#     package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+#     deploymentMethod: 'auto'
 
