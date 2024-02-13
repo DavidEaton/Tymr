@@ -19,10 +19,10 @@ jobs:
   steps:
 
 
-  - script: |
-      pwd
-      ls -la
-    displayName: 'List current directory'
+  # - script: |
+  #     pwd
+  #     ls -la
+  #   displayName: 'List current directory'
 
    # Build Client project
   - task: DotNetCoreCLI@2
