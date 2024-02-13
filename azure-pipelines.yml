@@ -48,26 +48,26 @@ jobs:
           projects: '**/*.csproj'
           arguments: '--configuration $(buildConfiguration) --no-build'
 
-      # Publish Client Build Artifacts
-      - task: DotNetCoreCLI@2
-        displayName: 'Publish'
-        inputs:
-          command: 'publish'
-          projects: '**/*.csproj'
-          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(artifactPath) --no-build'
+      # # Publish Client Build Artifacts
+      # - task: DotNetCoreCLI@2
+      #   displayName: 'Publish'
+      #   inputs:
+      #     command: 'publish'
+      #     projects: '**/*.csproj'
+      #     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(artifactPath) --no-build'
 
-      - task: PublishBuildArtifacts@1
-        displayName: 'Publish Artifacts'
-        inputs:
-          PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(artifactPath)'
-          ArtifactName: 'webapp'
-          publishLocation: 'Container'
+      # - task: PublishBuildArtifacts@1
+      #   displayName: 'Publish Artifacts'
+      #   inputs:
+      #     PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(artifactPath)'
+      #     ArtifactName: 'webapp'
+      #     publishLocation: 'Container'
 
-      # Deploy Client
-      - task: AzureWebApp@1
-        displayName: 'Deploy to Azure WebApp'
-        inputs:
-          azureSubscription: $(azureSubscription)
-          appName: $(webAppName)
-          package: '$(Build.ArtifactStagingDirectory)/$(artifactPath)'
-          deploymentMethod: 'runFromPackage'
+      # # Deploy Client
+      # - task: AzureWebApp@1
+      #   displayName: 'Deploy to Azure WebApp'
+      #   inputs:
+      #     azureSubscription: $(azureSubscription)
+      #     appName: $(webAppName)
+      #     package: '$(Build.ArtifactStagingDirectory)/$(artifactPath)'
+      #     deploymentMethod: 'runFromPackage'
