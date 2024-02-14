@@ -48,27 +48,18 @@ jobs:
         arguments: '--configuration $(buildConfiguration) --no-build'
         publishTestResults: true
 
+# Deploy Client to Azure Web App
 - job: Deploy
   displayName: 'Deploy Application'
   dependsOn: BuildAndTest
   condition: succeeded()
   steps:
-    # Publish Client app
-    - task: DotNetCoreCLI@2
-      displayName: 'Publish Client Application'
-      inputs:
-        command: 'publish'
-        publishWebProjects: false
-        projects: '**/Tymr.Client.csproj'
-        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Tymr.Client'
-        zipAfterPublish: true
-
-    # Deploy Client to Azure Web App
+    - download: current
+      artifact: TymrClientArtifact
     - task: AzureWebApp@1
       displayName: 'Deploy Client to Azure Web App'
       inputs:
         azureSubscription: $(azureSubscription)
         appType: 'webApp'
         appName: $(webAppName)
-        package: '$(System.DefaultWorkingDirectory)/**/Tymr.Client.zip'
-
+        package: '$(Pipeline.Workspace)/TymrClientArtifact/Tymr.Client.zip'
