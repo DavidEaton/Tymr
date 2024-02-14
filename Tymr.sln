@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DevOps", "DevOps", "{00F913
 		azure-pipelines.yml = azure-pipelines.yml
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tymr.Api", "Tymr.Api\Tymr.Api.csproj", "{65E160C9-0D89-48E2-A8CE-99566D7F756B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{6197232D-4BE2-4099-B27C-D540397ACE46}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6197232D-4BE2-4099-B27C-D540397ACE46}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6197232D-4BE2-4099-B27C-D540397ACE46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65E160C9-0D89-48E2-A8CE-99566D7F756B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65E160C9-0D89-48E2-A8CE-99566D7F756B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65E160C9-0D89-48E2-A8CE-99566D7F756B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65E160C9-0D89-48E2-A8CE-99566D7F756B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

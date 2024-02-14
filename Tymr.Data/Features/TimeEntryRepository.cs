@@ -117,5 +117,10 @@ namespace Tymr.Data.Features
                 return Result.Failure("Failed to write to the file.");
             }
         }
+
+        public Result<IEnumerable<TimeEntry>> GetAll()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
