@@ -76,4 +76,4 @@ jobs:
         azureSubscription: $(azureSubscription)
         appType: 'webApp'
         appName: $(webAppName)
-        package: '$(Pipeline.Workspace)/$(artifactPath)/Tymr.Client.zip'
+        package: '$(Pipeline.Workspace)/$(artifactPath)/Tymr.zip'
