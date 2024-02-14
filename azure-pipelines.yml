@@ -8,14 +8,12 @@ variables:
   azureSubscription: 'Janco International - Dev'
   buildConfiguration: 'Release'
   dotnetSdkVersion: '6.0.x'
-  entityFrameworkVersion: '6.0.*'
-  resourceGroup: 'tymr'
   webAppName: 'tymr-client'
   artifactPath: 'Tymr/published'
 
 jobs:
-- job: BuildAndDeploy
-  displayName: 'Build and Deploy Application'
+- job: BuildAndTest
+  displayName: 'Build and Test Application'
   steps:
     - checkout: self
     
@@ -30,40 +28,40 @@ jobs:
       displayName: 'Restore NuGet packages'
       inputs:
         command: 'restore'
-        projects: 'Tymr/**/*.csproj'
+        projects: '**/*.csproj'
 
-    # Build Data project (required by Client project)
+    # Build solution excluding test projects to avoid unnecessary builds
     - task: DotNetCoreCLI@2
-      displayName: 'Build Data Project'
+      displayName: 'Build Solution'
       inputs:
         command: 'build'
-        projects: '**/Tymr.Data.csproj'
-        arguments: '--configuration $(buildConfiguration)'
-
-    # Build Client project
-    - task: DotNetCoreCLI@2
-      displayName: 'Build Client Project'
-      inputs:
-        command: 'build'
-        projects: '**/Tymr.Client.csproj'
-        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Tymr.Client'
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration) --no-restore'
+        excludeProjects: '**/*Tests.csproj'
 
     # Run tests
     - task: DotNetCoreCLI@2
-      displayName: 'Test'
+      displayName: 'Run Tests'
       inputs:
         command: 'test'
         projects: '**/*Tests.csproj'
-        arguments: '--configuration $(buildConfiguration)'
+        arguments: '--configuration $(buildConfiguration) --no-build'
         publishTestResults: true
 
-    # Publish Client build artifacts
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Client Artifacts'
+- job: Deploy
+  displayName: 'Deploy Application'
+  dependsOn: BuildAndTest
+  condition: succeeded()
+  steps:
+    # Publish Client app
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish Client Application'
       inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)/Tymr.Client'
-        ArtifactName: 'Tymr.Client'
-        publishLocation: 'Container'
+        command: 'publish'
+        publishWebProjects: false
+        projects: '**/Tymr.Client.csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Tymr.Client'
+        zipAfterPublish: true
 
     # Deploy Client to Azure Web App
     - task: AzureWebApp@1
@@ -73,36 +71,3 @@ jobs:
         appName: $(webAppName)
         package: '$(Build.ArtifactStagingDirectory)/Tymr.Client'
         deploymentMethod: 'runFromPackage'
-
-
-    # # Run tests
-    # - task: DotNetCoreCLI@2
-    #   displayName: 'Test'
-    #   inputs:
-    #     command: 'test'
-    #     projects: '**/*.csproj'
-    #     arguments: '--configuration $(buildConfiguration) --no-build'
-
-      # # Publish Client Build Artifacts
-      # - task: DotNetCoreCLI@2
-      #   displayName: 'Publish'
-      #   inputs:
-      #     command: 'publish'
-      #     projects: '**/*.csproj'
-      #     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(artifactPath) --no-build'
-
-      # - task: PublishBuildArtifacts@1
-      #   displayName: 'Publish Artifacts'
-      #   inputs:
-      #     PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(artifactPath)'
-      #     ArtifactName: 'webapp'
-      #     publishLocation: 'Container'
-
-      # # Deploy Client
-      # - task: AzureWebApp@1
-      #   displayName: 'Deploy to Azure WebApp'
-      #   inputs:
-      #     azureSubscription: $(azureSubscription)
-      #     appName: $(webAppName)
-      #     package: '$(Build.ArtifactStagingDirectory)/$(artifactPath)'
-      #     deploymentMethod: 'runFromPackage'
