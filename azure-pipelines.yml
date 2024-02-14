@@ -53,7 +53,7 @@ jobs:
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Client Build Artifacts'
       inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)/Tymr.Client.zip'
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: '$(artifactPath)'
         publishLocation: 'Container'
 
