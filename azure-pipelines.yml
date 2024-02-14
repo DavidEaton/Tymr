@@ -49,14 +49,12 @@ jobs:
         publishTestResults: true
 
     # Publish Build Artifacts
-    - task: CopyFiles@2
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish pipeline artifact'
       inputs:
-        contents: '_buildOutput/**'
-        targetFolder: $(Build.ArtifactStagingDirectory)
-    - task: PublishBuildArtifacts@1
-      inputs:
-        pathToPublish: $(Build.ArtifactStagingDirectory)
-        artifactName: '$(artifactPath)'
+        targetPath: '$(Pipeline.Workspace)'
+        publishLocation: 'pipeline'
+        # artifactName: WebApp
 
 # Deploy Client to Azure Web App
 - job: Deploy
