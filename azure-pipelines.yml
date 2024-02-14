@@ -70,5 +70,5 @@ jobs:
         azureSubscription: $(azureSubscription)
         appType: 'webApp'
         appName: $(webAppName)
-        package: '$(Build.ArtifactStagingDirectory)/Tymr.Client.zip'
+        package: '$(System.DefaultWorkingDirectory)/**/Tymr.Client.zip'
 
