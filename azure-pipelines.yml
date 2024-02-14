@@ -48,19 +48,19 @@ jobs:
         arguments: '--configuration $(buildConfiguration) --no-build --collect "Code coverage"'
         publishTestResults: true
 
-    # Publish Build Artifacts
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: publish
-        publishWebProjects: True
-        arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-        zipAfterPublish: True
-    
-    # # Upload all the files in $(Build.ArtifactStagingDirectory) as an artifact of the build
-    # - task: PublishPipelineArtifact@1
+    # Compiles and packages application, preparing it for deployment or distribution
+    # - task: DotNetCoreCLI@2
     #   inputs:
-    #     targetPath: '$(Build.ArtifactStagingDirectory)' 
-    #     artifactName: '$(artifactPath)'
+    #     command: publish
+    #     publishWebProjects: True
+    #     arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    #     zipAfterPublish: True
+    
+    # Uploads the packaged application as an artifact
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)' 
+        artifactName: '$(artifactPath)'
 
 # Deploy Client to Azure Web App
 - job: Deploy
