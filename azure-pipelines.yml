@@ -9,7 +9,7 @@ variables:
   buildConfiguration: 'Release'
   dotnetSdkVersion: '6.0.x'
   webAppName: 'tymr-client'
-  artifactPath: 'Tymr/published'
+  artifactPath: 'deploy-packages'
 
 jobs:
 - job: BuildAndTest
@@ -48,11 +48,14 @@ jobs:
         arguments: '--configuration $(buildConfiguration) --no-build --collect "Code coverage"'
         publishTestResults: true
 
+
     # Publish Build Artifacts
     - task: PublishBuildArtifacts@1
+      displayName: 'Publish Client Build Artifacts'
       inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)/*.zip'
-        ArtifactName: 'TymrClientArtifact'
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/Tymr.Client.zip'
+        ArtifactName: '$(artifactPath)'
+        publishLocation: 'Container'
 
 # Deploy Client to Azure Web App
 - job: Deploy
@@ -61,11 +64,11 @@ jobs:
   condition: succeeded()
   steps:
     - download: current
-      artifact: TymrClientArtifact
+      artifact: '$(artifactPath)'
     - task: AzureWebApp@1
       displayName: 'Deploy Client to Azure Web App'
       inputs:
         azureSubscription: $(azureSubscription)
         appType: 'webApp'
         appName: $(webAppName)
-        package: '$(Pipeline.Workspace)/TymrClientArtifact/Tymr.Client.zip'
+        package: '$(Pipeline.Workspace)/$(artifactPath)/Tymr.Client.zip'
