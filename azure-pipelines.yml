@@ -54,7 +54,7 @@ jobs:
       inputs:
         command: 'test'
         projects: '**/*Tests.csproj'
-        arguments: '--configuration $(buildConfiguration) --no-build'
+        arguments: '--configuration $(buildConfiguration)'
         publishTestResults: true
 
     # Publish Client build artifacts
