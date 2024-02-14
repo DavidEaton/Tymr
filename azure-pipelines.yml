@@ -48,6 +48,12 @@ jobs:
         arguments: '--configuration $(buildConfiguration) --no-build'
         publishTestResults: true
 
+    # Publish Build Artifacts
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/Tymr.Client.zip'
+        ArtifactName: 'TymrClientArtifact'
+
 # Deploy Client to Azure Web App
 - job: Deploy
   displayName: 'Deploy Application'
