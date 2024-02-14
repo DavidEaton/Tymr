@@ -45,13 +45,13 @@ jobs:
       inputs:
         command: 'test'
         projects: '**/*Tests.csproj'
-        arguments: '--configuration $(buildConfiguration) --no-build'
+        arguments: '--configuration $(buildConfiguration) --no-build --collect "Code coverage"'
         publishTestResults: true
 
     # Publish Build Artifacts
     - task: PublishBuildArtifacts@1
       inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)/Tymr.Client.zip'
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/*.zip'
         ArtifactName: 'TymrClientArtifact'
 
 # Deploy Client to Azure Web App
