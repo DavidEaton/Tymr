@@ -48,14 +48,15 @@ jobs:
         arguments: '--configuration $(buildConfiguration) --no-build --collect "Code coverage"'
         publishTestResults: true
 
-
     # Publish Build Artifacts
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Client Build Artifacts'
+    - task: CopyFiles@2
       inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        ArtifactName: '$(artifactPath)'
-        publishLocation: 'Container'
+        contents: '_buildOutput/**'
+        targetFolder: $(Build.ArtifactStagingDirectory)
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: $(Build.ArtifactStagingDirectory)
+        artifactName: '$(artifactPath)'
 
 # Deploy Client to Azure Web App
 - job: Deploy
