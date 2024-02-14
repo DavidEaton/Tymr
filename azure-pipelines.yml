@@ -50,11 +50,9 @@ jobs:
 
     # Publish Build Artifacts
     - task: PublishPipelineArtifact@1
-      displayName: 'Publish pipeline artifact'
       inputs:
-        targetPath: '$(Pipeline.Workspace)'
-        publishLocation: 'pipeline'
-        # artifactName: WebApp
+        targetPath: $(System.DefaultWorkingDirectory)/'$(artifactPath)'/
+        artifactName: '$(artifactPath)'
 
 # Deploy Client to Azure Web App
 - job: Deploy
