@@ -65,14 +65,6 @@ jobs:
         arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/client'
         zipAfterPublish: True
     
-    # Publish API
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: publish
-        projects: '**/Tymr.Api.csproj'
-        arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/api'
-        zipAfterPublish: True
-    
     # Publishes the packaged application as an artifact
     # The PublishPipelineArtifact@1 task doesn't interact with application code
     # directly. Instead, it's focused on the DevOps process, ensuring that the
@@ -86,6 +78,14 @@ jobs:
         targetPath: '$(Build.ArtifactStagingDirectory)/client' 
         artifactName: '$(artifactNameClient)'
 
+    # Publish API
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: publish
+        projects: '**/Tymr.Api.csproj'
+        arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/api'
+        zipAfterPublish: True
+    
     # Publish API Artifact
     - task: PublishPipelineArtifact@1
       inputs:
