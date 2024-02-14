@@ -58,12 +58,12 @@ jobs:
     # It makes the app ready for deployment by creating a set of deployable files.
 
     # Publish Client Application
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: publish
-        projects: '**/Tymr.Client.csproj'
-        arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/client'
-        zipAfterPublish: True
+    # - task: DotNetCoreCLI@2
+    #   inputs:
+    #     command: publish
+    #     projects: '**/Tymr.Client.csproj'
+    #     arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/client'
+    #     zipAfterPublish: True
     
     # Publishes the packaged application as an artifact
     # The PublishPipelineArtifact@1 task doesn't interact with application code
@@ -73,10 +73,10 @@ jobs:
     # such as for deployment to different environments or for archival purposes.
 
     # Publish Client Artifact
-    - task: PublishPipelineArtifact@1
-      inputs:
-        targetPath: '$(Build.ArtifactStagingDirectory)/client' 
-        artifactName: '$(artifactNameClient)'
+    # - task: PublishPipelineArtifact@1
+    #   inputs:
+    #     targetPath: '$(Build.ArtifactStagingDirectory)/client' 
+    #     artifactName: '$(artifactNameClient)'
 
     # Publish API
     - task: DotNetCoreCLI@2
@@ -93,20 +93,20 @@ jobs:
         artifactName: '$(artifactNameApi)'
 
 # Deploy Client to Azure Web App
-- job: DeployClient
-  displayName: 'Deploy Client Application'
-  dependsOn: BuildAndTest
-  condition: succeeded()
-  steps:
-    - download: current
-      artifact: '$(artifactNameClient)'
-    - task: AzureWebApp@1
-      displayName: 'Deploy Client to Azure Web App'
-      inputs:
-        azureSubscription: $(azureSubscription)
-        appType: 'webApp'
-        appName: $(clientAppName)
-        package: '$(Pipeline.Workspace)/$(artifactNameClient)/**/*.zip'
+# - job: DeployClient
+#   displayName: 'Deploy Client Application'
+#   dependsOn: BuildAndTest
+#   condition: succeeded()
+#   steps:
+#     - download: current
+#       artifact: '$(artifactNameClient)'
+#     - task: AzureWebApp@1
+#       displayName: 'Deploy Client to Azure Web App'
+#       inputs:
+#         azureSubscription: $(azureSubscription)
+#         appType: 'webApp'
+#         appName: $(clientAppName)
+#         package: '$(Pipeline.Workspace)/$(artifactNameClient)/**/*.zip'
 
 # Deploy API to Azure Web App
 - job: DeployAPI
