@@ -56,11 +56,11 @@ jobs:
         arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         zipAfterPublish: True
     
-    # Upload all the files in $(Build.ArtifactStagingDirectory) as an artifact of the build
-    - task: PublishPipelineArtifact@1
-      inputs:
-        targetPath: '$(Build.ArtifactStagingDirectory)' 
-        artifactName: '$(artifactPath)'
+    # # Upload all the files in $(Build.ArtifactStagingDirectory) as an artifact of the build
+    # - task: PublishPipelineArtifact@1
+    #   inputs:
+    #     targetPath: '$(Build.ArtifactStagingDirectory)' 
+    #     artifactName: '$(artifactPath)'
 
 # Deploy Client to Azure Web App
 - job: Deploy
