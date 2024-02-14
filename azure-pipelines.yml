@@ -68,6 +68,7 @@ jobs:
       displayName: 'Deploy Client to Azure Web App'
       inputs:
         azureSubscription: $(azureSubscription)
+        appType: 'webApp'
         appName: $(webAppName)
-        package: '$(Build.ArtifactStagingDirectory)/Tymr.Client'
-        deploymentMethod: 'runFromPackage'
+        package: '$(Build.ArtifactStagingDirectory)/Tymr.Client.zip'
+
