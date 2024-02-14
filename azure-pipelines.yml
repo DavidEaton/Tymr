@@ -83,13 +83,13 @@ jobs:
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)/client' 
-        artifactName: '$(artifactPath)/TymrClient'
+        artifactName: 'TymrClient'
 
     # Publish API Artifact
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)/api' 
-        artifactName: '$(artifactPath)/TymrApi'
+        artifactName: 'TymrApi'
 
 # Deploy Client to Azure Web App
 - job: DeployClient
