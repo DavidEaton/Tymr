@@ -26,6 +26,11 @@ namespace Tymr.Api
 
             app.UseAuthorization();
 
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapHealthChecks("/healthcheck");
+            });
 
             app.MapControllers();
 

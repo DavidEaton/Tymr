@@ -98,14 +98,14 @@ jobs:
   condition: succeeded()
   steps:
     - download: current
-      artifact: '$(artifactPath)/TymrClient'
+      artifact: 'TymrClient/Tymr.zip'
     - task: AzureWebApp@1
       displayName: 'Deploy Client to Azure Web App'
       inputs:
         azureSubscription: $(azureSubscription)
         appType: 'webApp'
         appName: $(clientAppName)
-        package: '$(Pipeline.Workspace)/TymrClient/**/*.zip'
+        package: '$(Pipeline.Workspace)/TymrClient/*.zip'
 
 # Deploy API to Azure Web App
 - job: DeployAPI
@@ -114,12 +114,12 @@ jobs:
   condition: succeeded()
   steps:
     - download: current
-      artifact: '$(artifactPath)/TymrApi'
+      artifact: 'TymrApi/Tymr.zip'
     - task: AzureWebApp@1
       displayName: 'Deploy API to Azure Web App'
       inputs:
         azureSubscription: $(azureSubscription)
         appType: 'webApp'
         appName: $(apiAppName)
-        package: '$(Pipeline.Workspace)/TymrApi/**/*.zip'
+        package: '$(Pipeline.Workspace)/TymrApi/*.zip'
 
