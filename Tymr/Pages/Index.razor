@@ -1,8 +1,29 @@
 ﻿@page "/"
 @using Tymr.Client.Features
+@inject IConfiguration Configuration
+@inject Microsoft.AspNetCore.Components.WebAssembly.Hosting.IWebAssemblyHostEnvironment Environment
 
 <PageTitle>Tymr</PageTitle>
 
 <h1 class="text-secondary">@DateTime.Today.DayOfWeek, @DateTime.Today.ToString("d")</h1>
 <h4>Full CI/CD + api</h4>
-<TimeEntryEditForm></TimeEntryEditForm>
+
+<div>Current Environment: @Environment.Environment</div>
+<div>Api Base Url: @apiBaseUrl</div>
+
+@* <TimeEntryEditForm></TimeEntryEditForm>
+ *@
+@code {
+    private string apiBaseUrl;
+
+    protected override void OnInitialized()
+    {
+        foreach (var config in Configuration.AsEnumerable())
+        {
+            Console.WriteLine($"Key: {config.Key}, Value: {config.Value}");
+        }
+
+        apiBaseUrl = Configuration["ApiBaseUrl"];
+    }
+}
+

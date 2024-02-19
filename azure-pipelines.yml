@@ -111,7 +111,7 @@ jobs:
 
 # Deploy API to Azure Web App
 - job: DeployAPI
-  displayName: 'Deploy API '
+  displayName: 'Deploy API'
   dependsOn: BuildAndTest
   condition: succeeded()
   steps:
