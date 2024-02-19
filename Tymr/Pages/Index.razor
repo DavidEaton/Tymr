@@ -8,22 +8,37 @@
 <h1 class="text-secondary">@DateTime.Today.DayOfWeek, @DateTime.Today.ToString("d")</h1>
 <h4>Full CI/CD + api</h4>
 
-<div>Current Environment: @Environment.Environment</div>
-<div>Api Base Url: @apiBaseUrl</div>
+<div>Current Environment:</div> 
+<h2>@Environment.Environment</h2>
+
+<div>Setting Source:</div>
+<h2>@Configuration["SettingSource"]</h2>
+
+<div>Api Base Url:</div>
+<h2>Configuration["ApiBaseUrl"]</h2>
+
+<div>
+    <h3>Configuration Values:</h3>
+    @foreach (var setting in configurationValues)
+    {
+        <div>
+            <strong>@setting.Key:</strong> @setting.Value
+        </div>
+    }
+</div>
 
 @* <TimeEntryEditForm></TimeEntryEditForm>
  *@
 @code {
-    private string apiBaseUrl;
+    private List<KeyValuePair<string, string>> configurationValues = new List<KeyValuePair<string, string>>();
 
     protected override void OnInitialized()
     {
-        foreach (var config in Configuration.AsEnumerable())
-        {
-            Console.WriteLine($"Key: {config.Key}, Value: {config.Value}");
-        }
-
-        apiBaseUrl = Configuration["ApiBaseUrl"];
+        configurationValues = Configuration
+            .AsEnumerable()
+            .Where(csetting => !string.IsNullOrEmpty(csetting.Value))
+            .ToList();
     }
 }
+
 
