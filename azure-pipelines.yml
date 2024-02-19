@@ -12,7 +12,7 @@ variables:
   apiAppName: 'tymr-api'
   artifactNameClient: 'TymrClient'
   artifactNameApi: 'TymrApi'
-  slot: 'staging'
+  slot: 'Staging'
 
 jobs:
 - job: BuildAndTest
@@ -112,20 +112,20 @@ jobs:
         slotName: '$(slot)'
         package: '$(Pipeline.Workspace)/$(artifactNameClient)/**/*.zip'
 
-# # Deploy API to Azure Web App
-# - job: DeployAPI
-#   displayName: 'Deploy API'
-#   dependsOn: BuildAndTest
-#   condition: succeeded()
-#   steps:
-#     - download: current
-#       artifact: '$(artifactNameApi)'
-#     - task: AzureWebApp@1
-#       displayName: 'Deploy API to Azure Web App'
-#       inputs:
-#         azureSubscription: $(azureSubscription)
-#         appType: 'webApp'
-#         appName: $(apiAppName)
-#         deployToSlotOrASE: true
-#         slotName: '$(slot)'
-#         package: '$(Pipeline.Workspace)/$(artifactNameApi)/**/*.zip'
+# Deploy API to Azure Web App
+- job: DeployAPI
+  displayName: 'Deploy API'
+  dependsOn: BuildAndTest
+  condition: succeeded()
+  steps:
+    - download: current
+      artifact: '$(artifactNameApi)'
+    - task: AzureWebApp@1
+      displayName: 'Deploy API to Azure Web App'
+      inputs:
+        azureSubscription: $(azureSubscription)
+        appType: 'webApp'
+        appName: $(apiAppName)
+        deployToSlotOrASE: true
+        slotName: '$(slot)'
+        package: '$(Pipeline.Workspace)/$(artifactNameApi)/**/*.zip'
